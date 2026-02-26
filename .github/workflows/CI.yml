@@ -1,10 +1,9 @@
-name: CI - Build Microservices
+name: CI - Build & Push
 
 on:
   push:
     branches:
       - main
-  pull_request:
 
 jobs:
   build:
@@ -18,7 +17,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Build Docker image
+      - name: Login to ACR
         run: |
-          docker build -t ${{ matrix.service }}:${{ github.sha }} ./${{ matrix.service }}
+          echo ${{ secrets.ACR_PASSWORD }} | docker login ${{ secrets.ACR_LOGIN_SERVER }} \
+          -u ${{ secrets.ACR_USERNAME }} --password-stdin
 
+      - name: Build Image
+        run: |
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/${{ matrix.service }}:${{ github.sha }} ./${{ matrix.service }}
+
+      - name: Push Image
+        run: |
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/${{ matrix.service }}:${{ github.sha }}
