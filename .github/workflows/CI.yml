@@ -17,6 +17,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Debug Secrets
+        run: |
+          echo "Login server: ${{ secrets.ACR_LOGIN_SERVER }}"
+          echo "Username exists"
+
       - name: Login to ACR
         run: |
           echo ${{ secrets.ACR_PASSWORD }} | docker login ${{ secrets.ACR_LOGIN_SERVER }} \
