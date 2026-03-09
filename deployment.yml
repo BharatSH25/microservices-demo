@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-python-deployment
+  labels:
+    app: test-python-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: test-python-deployment
+  template:
+    metadata:
+      labels:
+        app: test-python-deployment
+    spec:
+      containers:
+      - name: python-app
+        image: m1:latest
+        ports:
+        - containerPort: 8000
+        imagePullPolicy: Never
